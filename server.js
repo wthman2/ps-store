@@ -23,8 +23,61 @@ if (!fs.existsSync(DATA_DIR)) {
 
 // Создаем файл с играми, если он не существует
 if (!fs.existsSync(GAMES_FILE)) {
-  const initialGames = require("./data/games.json");
-  fs.writeFileSync(GAMES_FILE, JSON.stringify(initialGames, null, 2));
+  // Инициализируем демо-данные
+  const initialGames = [
+    {
+      id: "k8yw3n5x7z",
+      name: "God of War Ragnarök",
+      description:
+        "Отправляйтесь в эпическое и душераздирающее путешествие, в котором Кратос и Атрей должны принять решение: сохранить себя или спасти девять миров. Тем временем Асгард готовится к предсказанной битве, которая приведет к концу света.",
+      image:
+        "https://image.api.playstation.com/vulcan/ap/rnd/202207/1210/4xJ8XB3bi888QTLZYdl7Oi0s.png",
+      priceOffline: 12000,
+      priceOnline: 15000,
+      priceUniversal: 18000,
+      availableOffline: true,
+      availableOnline: true,
+      availableUniversal: true,
+      isNew: true,
+    },
+    {
+      id: "a2c4e6g8i0",
+      name: "Spider-Man 2",
+      description:
+        "Питер Паркер и Майлз Моралес возвращаются в захватывающем новом приключении в серии Marvel's Spider-Man для PS5. Качайтесь, прыгайте и используйте новые способности паутины, чтобы передвигаться по Нью-Йорку, переключаясь между Питером и Майлзом для разных историй.",
+      image:
+        "https://image.api.playstation.com/vulcan/ap/rnd/202306/1219/1c7b42fcf9ccc3e4283e83eda63eecb2.png",
+      priceOffline: 14000,
+      priceOnline: 17000,
+      priceUniversal: 20000,
+      availableOffline: true,
+      availableOnline: true,
+      availableUniversal: false,
+      isNew: true,
+    },
+    {
+      id: "b3d5f7h9j1",
+      name: "Horizon Forbidden West",
+      description:
+        "Присоединяйтесь к Элой в ее путешествии по величественному, но опасному пограничному региону Запретный Запад, где она столкнется с новыми загадочными угрозами и раскроет тайны, которые могут изменить судьбу всего мира.",
+      image:
+        "https://image.api.playstation.com/vulcan/ap/rnd/202107/3100/HO8vkO9pfXhwbHi5WHECQJdN.png",
+      priceOffline: 10000,
+      priceOnline: 13000,
+      priceUniversal: 16000,
+      availableOffline: true,
+      availableOnline: false,
+      availableUniversal: true,
+      isNew: false,
+    },
+  ];
+
+  try {
+    fs.writeFileSync(GAMES_FILE, JSON.stringify(initialGames, null, 2));
+    console.log("Создан файл с начальными данными игр");
+  } catch (error) {
+    console.error("Ошибка при создании файла игр:", error);
+  }
 }
 
 // Middleware для проверки аутентификации
