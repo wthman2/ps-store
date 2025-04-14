@@ -39,8 +39,6 @@ if (!fs.existsSync(GAMES_FILE)) {
       availableOnline: true,
       availableUniversal: true,
       isNew: true,
-      genre: "action",
-      psVersion: "ps5",
     },
     {
       id: "a2c4e6g8i0",
@@ -56,8 +54,6 @@ if (!fs.existsSync(GAMES_FILE)) {
       availableOnline: true,
       availableUniversal: false,
       isNew: true,
-      genre: "action",
-      psVersion: "ps5",
     },
     {
       id: "b3d5f7h9j1",
@@ -73,59 +69,6 @@ if (!fs.existsSync(GAMES_FILE)) {
       availableOnline: false,
       availableUniversal: true,
       isNew: false,
-      genre: "adventure",
-      psVersion: "both",
-    },
-    {
-      id: "c4e6g8i0k2",
-      name: "Gran Turismo 7",
-      description:
-        "Самый реалистичный автосимулятор для PlayStation. Сотни лицензированных автомобилей, детальная физика и потрясающая графика.",
-      image:
-        "https://image.api.playstation.com/vulcan/ap/rnd/202109/1321/yZ7dpmjtHr1olhutHT57IFRh.png",
-      priceOffline: 14000,
-      priceOnline: 19000,
-      priceUniversal: 28000,
-      availableOffline: true,
-      availableOnline: true,
-      availableUniversal: true,
-      isNew: false,
-      genre: "racing",
-      psVersion: "both",
-    },
-    {
-      id: "d5f7h9j1l3",
-      name: "Demon's Souls",
-      description:
-        "Полностью переработанная версия классической игры. Сражайтесь с ужасающими боссами в мрачном фэнтезийном мире.",
-      image:
-        "https://image.api.playstation.com/vulcan/ap/rnd/202011/0402/GwRVgYSfT7kKzJKpHQWJEHpN.png",
-      priceOffline: 16000,
-      priceOnline: 21000,
-      priceUniversal: 30000,
-      availableOffline: true,
-      availableOnline: true,
-      availableUniversal: false,
-      isNew: false,
-      genre: "rpg",
-      psVersion: "ps5",
-    },
-    {
-      id: "e6g8i0k2m4",
-      name: "The Last of Us Part II",
-      description:
-        "Продолжение истории Элли и Джоэла в постапокалиптическом мире. Эмоциональный сюжет, реалистичные персонажи и жестокий геймплей.",
-      image:
-        "https://image.api.playstation.com/vulcan/ap/rnd/202010/0222/niMUubpU9y1PxNvYmDfb8QFD.png",
-      priceOffline: 10000,
-      priceOnline: 15000,
-      priceUniversal: 22000,
-      availableOffline: true,
-      availableOnline: false,
-      availableUniversal: true,
-      isNew: false,
-      genre: "adventure",
-      psVersion: "ps4",
     },
   ];
 
@@ -161,90 +104,7 @@ app.get("/api/games", (req, res) => {
   try {
     const gamesData = fs.readFileSync(GAMES_FILE, "utf8");
     const games = JSON.parse(gamesData);
-
-    // Фильтрация по параметрам запроса
-    let filteredGames = [...games];
-
-    // Фильтр по жанру
-    if (req.query.genre) {
-      filteredGames = filteredGames.filter(
-        (game) => game.genre === req.query.genre
-      );
-    }
-
-    // Фильтр по версии PS
-    if (req.query.psVersion) {
-      if (req.query.psVersion === "both") {
-        filteredGames = filteredGames.filter(
-          (game) => game.psVersion === "both"
-        );
-      } else {
-        filteredGames = filteredGames.filter(
-          (game) =>
-            game.psVersion === req.query.psVersion || game.psVersion === "both"
-        );
-      }
-    }
-
-    // Фильтр по наличию
-    if (req.query.availability) {
-      switch (req.query.availability) {
-        case "offline":
-          filteredGames = filteredGames.filter((game) => game.availableOffline);
-          break;
-        case "online":
-          filteredGames = filteredGames.filter((game) => game.availableOnline);
-          break;
-        case "universal":
-          filteredGames = filteredGames.filter(
-            (game) => game.availableUniversal
-          );
-          break;
-        case "available":
-          filteredGames = filteredGames.filter(
-            (game) =>
-              game.availableOffline ||
-              game.availableOnline ||
-              game.availableUniversal
-          );
-          break;
-      }
-    }
-
-    // Фильтр по цене
-    if (req.query.minPrice) {
-      const minPrice = parseInt(req.query.minPrice);
-      filteredGames = filteredGames.filter((game) => {
-        const lowestPrice = Math.min(
-          game.availableOffline ? game.priceOffline : Infinity,
-          game.availableOnline ? game.priceOnline : Infinity,
-          game.availableUniversal ? game.priceUniversal : Infinity
-        );
-        return lowestPrice >= minPrice;
-      });
-    }
-
-    if (req.query.maxPrice) {
-      const maxPrice = parseInt(req.query.maxPrice);
-      filteredGames = filteredGames.filter((game) => {
-        const lowestPrice = Math.min(
-          game.availableOffline ? game.priceOffline : Infinity,
-          game.availableOnline ? game.priceOnline : Infinity,
-          game.availableUniversal ? game.priceUniversal : Infinity
-        );
-        return lowestPrice <= maxPrice;
-      });
-    }
-
-    // Поиск по названию
-    if (req.query.search) {
-      const searchTerm = req.query.search.toLowerCase();
-      filteredGames = filteredGames.filter((game) =>
-        game.name.toLowerCase().includes(searchTerm)
-      );
-    }
-
-    res.json(filteredGames);
+    res.json(games);
   } catch (error) {
     console.error("Ошибка при чтении файла игр:", error);
     res.status(500).json({ error: "Ошибка сервера" });
@@ -345,85 +205,14 @@ app.delete("/api/games/:id", authenticateToken, (req, res) => {
 app.post("/api/admin/login", (req, res) => {
   const { password } = req.body;
 
-  // Проверяем пароль для входа в админ-панель
-  if (password === "medet1977") {
+  // В реальном приложении пароль должен быть захеширован и сохранен в базе данных
+  // Здесь для простоты используем захардкоженный пароль
+  if (password === "admin123") {
     // Создаем JWT токен
     const token = jwt.sign({ role: "admin" }, JWT_SECRET, { expiresIn: "1h" });
     res.json({ token });
   } else {
     res.status(401).json({ error: "Неверный пароль" });
-  }
-});
-
-// API для получения жанров
-app.get("/api/genres", (req, res) => {
-  try {
-    const gamesData = fs.readFileSync(GAMES_FILE, "utf8");
-    const games = JSON.parse(gamesData);
-
-    // Получаем уникальные жанры из всех игр
-    const genres = [...new Set(games.map((game) => game.genre))].filter(
-      Boolean
-    );
-
-    res.json(genres);
-  } catch (error) {
-    console.error("Ошибка при получении жанров:", error);
-    res.status(500).json({ error: "Ошибка сервера" });
-  }
-});
-
-// API для получения версий PlayStation
-app.get("/api/ps-versions", (req, res) => {
-  try {
-    const gamesData = fs.readFileSync(GAMES_FILE, "utf8");
-    const games = JSON.parse(gamesData);
-
-    // Получаем уникальные версии PlayStation из всех игр
-    const psVersions = [...new Set(games.map((game) => game.psVersion))].filter(
-      Boolean
-    );
-
-    res.json(psVersions);
-  } catch (error) {
-    console.error("Ошибка при получении версий PlayStation:", error);
-    res.status(500).json({ error: "Ошибка сервера" });
-  }
-});
-
-// API для получения ценового диапазона
-app.get("/api/price-range", (req, res) => {
-  try {
-    const gamesData = fs.readFileSync(GAMES_FILE, "utf8");
-    const games = JSON.parse(gamesData);
-
-    // Находим минимальную и максимальную цены
-    let minPrice = Infinity;
-    let maxPrice = 0;
-
-    games.forEach((game) => {
-      const prices = [
-        game.availableOffline ? game.priceOffline : Infinity,
-        game.availableOnline ? game.priceOnline : Infinity,
-        game.availableUniversal ? game.priceUniversal : Infinity,
-      ];
-
-      const lowestPrice = Math.min(...prices);
-      const highestPrice = Math.max(...prices.filter((p) => p !== Infinity));
-
-      if (lowestPrice < minPrice && lowestPrice !== Infinity) {
-        minPrice = lowestPrice;
-      }
-
-      if (highestPrice > maxPrice) {
-        maxPrice = highestPrice;
-      }
-    });
-
-    res.json({ minPrice, maxPrice });
-  } catch (error) {
-    console.error("Ошибка при получении ценового диапазона:", error);
-    res.status(500).json({ error: "Ошибка сервера" });
   }
 });
 
